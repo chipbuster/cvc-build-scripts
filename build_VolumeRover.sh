@@ -11,7 +11,6 @@ WORK_DIR=/Volumes/Workspace/software-fresh
 # Need to be in the correct location, not the alias. Important for petsc
 cd $WORK_DIR
 
-
 ROOT_FOLDER=VolumeRover-Qt4
 
 # The build type and directory (either Release or Debug)

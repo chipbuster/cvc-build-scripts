@@ -6,16 +6,67 @@ out the code and building it on various ICES machines. These scripts are
 intended to be run from a crontab, though they can probably be manually
 triggered.
 
+#### Quick Start
+
 
 
 #### Project vs Host settings
 
 There are two aspects to building a project: the project itself and the host.
 
-Project configurations are things like the SVN repository, needed libraries,
-and build commands.
+###### Host Settings
 
 Host configurations are things like paths to the scratch directory and any
-modules that need to be loaded on the local system. Also of potential interest
-are any extra environmental variables that need to be set (e.g. choice of
-`FC`,`CC`,and `CXX` on OS X, or `QT_SELECT` on ArchLinux).
+modules that need to be loaded on the local system. There are three skeleton
+files (sl6.sh, c7.sh, and osx.sh) that can be used to create hostfiles for
+specific machines.
+
+Each host settings file should export at least the following variables:
+
+* `BUILD_OS`: A string identifying the operating system the build is on
+* `HOST_MODLIST`: An array of modules that need to be    loaded for most projects
+to build (this includes things like core modules, gcc, and cmake). These
+ modules will be loaded when the main build script is first called and will
+ remain loaded while all build tests are run.
+* `WORKDIR`: A directory where code checkouts and build directories can be made.
+This directory should be user-writeable and local (i.e. **not** NFS or SSHFS)
+
+In addition, the host files may optionally export the following additional variables:
+
+* `BUILD_HOST`: A string identifying the system that the build takes place on
+  (for example, a hostname)
+* `MAIL_ERR_TO`: This will cause the script to send any error logs to the listed
+   email address. May send multiple emails if combined with crontab mail--be careful!
+* `NPES`: The number of processors available for build on this computer.
+* Other environmental variables that may be necessary, e.g. `FC`, `CC`, and `CXX` on
+  OS X w/ MacPorts, or `QT_SELECT` on Arch Linux.
+
+###### Project Settings
+
+Project configurations are things like the SVN repository, needed libraries,
+and build commands. Any of the existing configs should serve as examples.
+
+Each project settings file should export at least the following variables:
+
+* `PROJ_NAME`: A string identifying the project. This will be used to report
+   errors and is also the name given to directories/files
+* `SVN_URL`: The URL used to fetch the source code (using `svn clone`)
+* `BUILD_TYPE`: An array containing the build types to be passed to
+  `-DCMAKE_BUILD_TYPE`. Usually, just `Debug` and `Release` is enough.
+
+Optionally, a project may also export the following:
+
+* `PROJ_MODLIST`: An array of modules needed to build the program. These will
+  be loaded prior to compilation and unloaded afterwards, to avoid contaminating
+  the environment for subsequent builds.
+* `VAR_NEEDS`: A list of environmental variables needed to execute the build.
+  If any of them are not defined by the host configuration, the build will exit
+  instead of continuing with undefined variables.
+* Other environmental variables necessary to the build. These should be `unset`
+  at the conclusion of the build to avoid contaminating the build environment.
+
+Each project should also export a function named `build_software()` that will
+run the necessary steps to build the software. This function can expect that
+all of the host modules will be loaded. It will need to load all of its build modules,
+run the build system, and then unload its modules and clear any environmental variables
+it set. It may optionally depend on `BUILD_OS` being set.
