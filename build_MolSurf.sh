@@ -1,19 +1,19 @@
 #! /bin/bash
-# Fail on error
-set -e
-# Give group permissions the same as user
-umask 022
+
+set -e # Fail on error
+umask 022 # Give group permissions the same as user
 
 # Number of cores is default 1, but more can be specified
 NPROC=${1-1}
 BUILD_TYPE=Release
+WORK_DIR=/Volumes/Workspace/software-fresh
 
 # Need to be in the correct location, not the alias. Important for petsc
-cd /Volumes/Workspace/software-fresh
+cd $WORK_DIR
 
 # Delete the previous version and download a new one.
 ROOT_FOLDER=MolSurf
-rm -rf $ROOT_FOLDER
+rm -rf "./$ROOT_FOLDER"
 
 svn co https://svn.ices.utexas.edu/repos/cvc/trunk/$ROOT_FOLDER
 
@@ -30,6 +30,6 @@ cmake ../ -DPRE_BUILD=OFF -DQT4_QGLOBAL_H_FILE=/workspace/shared_libs/qt/include
 cmake ../ -DPRE_BUILD=OFF
 make -j4
 
-echo 
+echo
 echo "Finished Successfully!!"
-echo 
+echo

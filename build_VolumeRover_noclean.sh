@@ -1,14 +1,15 @@
-#! /bin/bash -e
-# Fail on error
-set -e
-# Give group permissions the same as user
-umask 022
+#! /bin/bash
 
-# Can add a flag that specifies the number of cores to compile with
+set -e # Fail on error
+umask 022 # Give group permissions the same as user
+
+# Number of cores is default 1, but more can be specified
 NPROC=${1-1}
+BUILD_TYPE=Release
+WORK_DIR=/Volumes/Workspace/software-fresh
 
 # Need to be in the correct location, not the alias. Important for petsc
-cd /Volumes/Workspace/software-fresh
+cd $WORK_DIR
 
 ROOT_FOLDER=VolumeRover-Qt4
 
