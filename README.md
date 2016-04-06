@@ -8,6 +8,8 @@ triggered.
 
 #### Quick Start
 
+#### Installation
+
 
 
 #### Project vs Host settings
@@ -23,23 +25,23 @@ specific machines.
 
 Each host settings file should export at least the following variables:
 
-* `BUILD_OS`: A string identifying the operating system the build is on
-* `HOST_MODLIST`: An array of modules that need to be    loaded for most projects
+* `BUILD_OS`: A string identifying the operating system the build is on. For ICES machines, this should be one of `sl6` (Scientific Linux), `c7` (CentOS), or `osx`.
+* `BUILD_HOST`: A string identifying the system that the build takes place on
+  (for example, a hostname)
+* `HOST_MODLIST`: An array of modules that need to be loaded for most projects
 to build (this includes things like core modules, gcc, and cmake). These
  modules will be loaded when the main build script is first called and will
- remain loaded while all build tests are run.
+ remain loaded while all build tests are run. If no modules need to be loaded, simply make an empty list.
 * `WORK_DIR`: A directory where code checkouts and build directories can be made.
 This directory should be user-writeable and local (i.e. **not** NFS or SSHFS)
 
 In addition, the host files may optionally export the following additional variables:
 
-* `BUILD_HOST`: A string identifying the system that the build takes place on
-  (for example, a hostname)
 * `MAIL_ERR_TO`: This will cause the script to send any error logs to the listed
    email address. May send multiple emails if combined with crontab mail--be careful!
-* `NPES`: The number of processors available for build on this computer.
+* `NPES`: The number of processors available for build on this computer. If not set, the build scripts will default to 1, which will be slooooooooowwwww.
 * Other environmental variables that may be necessary, e.g. `FC`, `CC`, and `CXX` on
-  OS X w/ MacPorts, or `QT_SELECT` on Arch Linux.
+  OS X w/ MacPorts, or `QT_SELECT` on Arch Linux. Make sure these are exported by either placing `export` in front of the definition or by placing `export VARNAME` further down in the file.
 
 ###### Project Settings
 

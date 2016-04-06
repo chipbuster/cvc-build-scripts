@@ -3,7 +3,7 @@
 set -e #Exit on error
 set -u #Exit if variable is undefined
 
-SCRIPT_DIR=$(dirname "$(readlink -f "$0")") #cd to appropriate directory
+SCRIPT_DIR=##INSTALLPATH##
 cd $SCRIPT_DIR
 
 source configs.sh #Things to build and which host to use
@@ -13,7 +13,7 @@ source utils.sh
 
 TARGET_SYS_CONFIG=SYS_configs/"$I_AM".sh
 
-set +u
+set +u #Need to allow for unset varibles (like LIBRARY_PATH)
 source $TARGET_SYS_CONFIG     #Source the host configuration files
 set -u
 
@@ -26,10 +26,12 @@ else
   done
 fi
 
-# Move to where the builds/checkouts should occur, but remember where these
-# scripts are
+# If we haven't set a processor count in host config, default to 1
+if [ -z "$NPES" ]; then
+  NPES=1
+fi
 
-
+# Move to where the builds/checkouts should occur
 
 cd $WORK_DIR
 

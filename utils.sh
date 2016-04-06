@@ -2,7 +2,6 @@
 
 function raise_alert()
 {
-  ALERT_TO="$1"
   ATTACHMENT="$2"
 
   SUBJECT="Build Failure on $BUILD_HOST for project $PROJ_NAME at $(date)"

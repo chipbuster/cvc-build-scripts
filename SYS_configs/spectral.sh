@@ -13,6 +13,9 @@ HOST_MODLIST=()
 # Where should projects be downloaded/built?
 WORK_DIR=/tmp
 
+# Spectral has 4 available cores
+NPES=4
+
 # Email error logs to this email address
 # MAIL_ERR_TO=example@user.com
 
