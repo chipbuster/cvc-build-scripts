@@ -14,7 +14,7 @@ HOST_MODLIST=()
 WORK_DIR=/tmp
 
 # Spectral has 4 available cores
-NPES=4
+NPES=8
 
 # Email error logs to this email address
 # MAIL_ERR_TO=example@user.com

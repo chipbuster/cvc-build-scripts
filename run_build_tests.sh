@@ -28,8 +28,8 @@ else
 fi
 
 # If we haven't set a processor count in host config, default to 1
-if [ -z "$NPES" ]; then
-  NPES=1
+if [ ! -n "$NPES" ]; then
+  export NPES=1
 fi
 
 # At this point, we have done all the preconfiguration needed to ensure
@@ -40,14 +40,15 @@ set +o errexit
 
 # Move to where the builds/checkouts should occur
 
-for TARGET in $BUILD_TARGETS; do
+for TARGET in ${BUILD_TARGETS[@]}; do
   cd $WORK_DIR #Get back into the main work directory
 
   #Source the script for our current build target
   source $SCRIPT_DIR/PROJECT_configs/${TARGET}.sh
 
-  # Load project modules, if any
-  if [ -n $PROJ_MODLIST ]; then
+  # Load project modules, if any (the ="" syntax provides a default empty string)
+  # so that we don't trigger the undefined variable checker
+  if [ -n ${PROJ_MODLIST=""} ]; then
     for MODULE in $PROJ_MODLIST; do
       module load $PROJ_MODLIST
     done
@@ -91,7 +92,7 @@ for TARGET in $BUILD_TARGETS; do
   build_project >> $LOG_FILE 2>&1
 
   # Before we move on to the next build, unload any modules that are project-only
-  if [ -n $PROJ_MODLIST ]; then
+  if [ -n ${PROJ_MODLIST=""} ]; then
     for MODULE in $PROJ_MODLIST; do
       module unload $PROJ_MODLIST
     done
