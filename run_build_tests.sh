@@ -40,12 +40,18 @@ set +o errexit
 
 # Move to where the builds/checkouts should occur
 
-
 for TARGET in $BUILD_TARGETS; do
   cd $WORK_DIR #Get back into the main work directory
 
   #Source the script for our current build target
   source $SCRIPT_DIR/PROJECT_configs/${TARGET}.sh
+
+  # Load project modules, if any
+  if [ -n $PROJ_MODLIST ]; then
+    for MODULE in $PROJ_MODLIST; do
+      module load $PROJ_MODLIST
+    done
+  fi
 
   # Removing the entire directory can take time (esp. for large builds)
   # Speed this up by renaming it so we can remove it in the background
@@ -83,6 +89,13 @@ for TARGET in $BUILD_TARGETS; do
 
   # Build the project and send output to the logfile.
   build_project >> $LOG_FILE 2>&1
+
+  # Before we move on to the next build, unload any modules that are project-only
+  if [ -n $PROJ_MODLIST ]; then
+    for MODULE in $PROJ_MODLIST; do
+      module unload $PROJ_MODLIST
+    done
+  fi
 
   # || raise_alert $GUARDIANS $WORK_DIR/$PROJ_NAME  #Guardians are temporarily offline
 done

@@ -2,7 +2,7 @@
 
 ## Mandatory variables
 export PROJ_NAME=MolSurf
-export SVN_URL=https://svn.ices.utexas.edu/repos/cvc/trunk/MolSurf
+export SVN_URL=https://svn.ices.utexas.edu/repos/cvc/branches/TexMol-Qt4
 
 export BUILD_TYPE=Release
 
@@ -17,13 +17,6 @@ function build_project()
 
   cmake $SRC_DIR -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPRE_BUILD=ON
   make --jobs=$NPES
-
-  #If the host config specifies these variables, QT should be appropriately set
-  if [ -n "$QMAKE_EXECUTABLE" ] && [ -n "$QT_GH_FILE" ]; then
-    cmake $SRC_DIR -DPRE_BUILD=OFF -DQT_QMAKE_EXECUTABLE=$QMAKE_EXECUTABLE
-    cmake $SRC_DIR -DPRE_BUILD=OFF -DQT4_QGLOBAL_H_FILE=$QT_GH_FILE
-  else
-    cmake $SRC_DIR -DPRE_BUILD=OFF
-  fi
+  cmake $SRC_DIR -DPRE_BUILD=OFF
   make --jobs=$NPES
 }
