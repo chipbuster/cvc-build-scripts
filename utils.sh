@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function raise_alert()
 {
@@ -12,4 +12,8 @@ function raise_alert()
   else
     echo $MESSAGE | mail -s $SUBJECT -a $ATTACHMENT $ALERT_TO
   fi
+
+  #Hardcoded into driver, but whatever. Used to let top know if we logged
+  #this error or not.
+  echo "Logged error" >> /tmp/errlogged.txt
 }

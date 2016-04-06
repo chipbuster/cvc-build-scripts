@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ## Mandatory variables
 export PROJ_NAME=MolSurf
@@ -20,15 +20,15 @@ function build_project()
 
   export LIBRARY_PATH=/usr/local/gfortran/lib:$LIBRARY_PATH
 
-  cmake $SRC_DIR -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPRE_BUILD=ON | tee --append $LOG_FILE
-  make --jobs=$NPES | tee --append $LOG_FILE
+  cmake $SRC_DIR -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPRE_BUILD=ON >> $LOG_FILE
+  make --jobs=$NPES >> $LOG_FILE
 
   #If the host config specifies these variables, QT should be appropriately set
   if [ -n "$QMAKE_EXECUTABLE" ] && [ -n "$QT_GH_FILE" ]; then
-    cmake $SRC_DIR -DPRE_BUILD=OFF -DQT_QMAKE_EXECUTABLE=$QMAKE_EXECUTABLE | tee --append $LOG_FILE
-    cmake $SRC_DIR -DPRE_BUILD=OFF -DQT4_QGLOBAL_H_FILE=$QT_GH_FILE | tee --append $LOG_FILE
+    cmake $SRC_DIR -DPRE_BUILD=OFF -DQT_QMAKE_EXECUTABLE=$QMAKE_EXECUTABLE >> $LOG_FILE
+    cmake $SRC_DIR -DPRE_BUILD=OFF -DQT4_QGLOBAL_H_FILE=$QT_GH_FILE >> $LOG_FILE
   else
-    cmake $SRC_DIR -DPRE_BUILD=OFF | tee --append $LOG_FILE
+    cmake $SRC_DIR -DPRE_BUILD=OFF >> $LOG_FILE
   fi
-  make --jobs=$NPES | tee --append $LOG_FILE
+  make --jobs=$NPES >> $LOG_FILE
 }

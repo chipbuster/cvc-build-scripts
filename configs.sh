@@ -1,7 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # All variables in this file NEED to be defined unless otherwise noted.
 # Ugly things may happen if you decide to delete any of them.
+
+# This file should contain no code that will execute when it is sourced
+# (i.e. no toplevel code). Functions and variables only!
 
 ################################
 ##### YOU HAVE BEEN WARNED #####

@@ -1,4 +1,4 @@
-#! /bin/bash -e
+#! /usr/bin/env bash -e
 
 set -e # Fail on error
 umask 022 # Give group permissions the same as user
