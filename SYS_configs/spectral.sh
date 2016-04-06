@@ -2,7 +2,7 @@
 
 ## These are the OS settings for OS X
 
-echo "Using settings for OS X 10.11."
+echo "Using settings for Spectral (OS X 10.11)"
 
 BUILD_OS=osx
 BUILD_HOST=spectral

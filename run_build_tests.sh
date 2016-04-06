@@ -3,7 +3,7 @@
 set -e #Exit on error
 set -u #Exit if variable is undefined
 
-SCRIPT_DIR=$(dirname "$(readlink -f "$0")") #cd to appropriate directory
+SCRIPT_DIR=/Users/ksong/Documents/build-test-scripts
 cd $SCRIPT_DIR
 
 source configs.sh #Things to build and which host to use
@@ -30,16 +30,30 @@ fi
 # scripts are
 
 
-
-cd $WORK_DIR
-
 for TARGET in $BUILD_TARGETS; do
-  source $SCRIPT_DIR/PROJECT_configs/${TARGET}.sh
 
-  rm -rf $PROJ_NAME
+  cd $WORK_DIR #Get back into the main work directory
+
+  #Source the script for our current build target
+  source $SCRIPT_DIR/PROJECT_configs/${TARGET}.sh 
+
+  # Removing the entire directory can take time (esp. for large builds)
+  # Speed this up by renaming it so we can remove it in the background
+  if [ -e $PROJ_NAME ]; then
+    mv $PROJ_NAME ${PROJ_NAME}_old
+    rm -rf ${PROJ_NAME}_old &
+  fi
+
+  # Do the same for the old build directory
+  if [ -e ${PROJ_NAME}_build ]; then
+    mv ${PROJ_NAME}_build ${PROJ_NAME}_buildold
+    rm -rf ${PROJ_NAME}_buildold &
+  fi
+
   svn co $SVN_URL $PROJ_NAME
   mkdir ${PROJ_NAME}_build
   cd ${PROJ_NAME}_build
+  SRC_DIR=$WORK_DIR/$PROJ_NAME
 
   echo "Building $PROJ_NAME"
 
