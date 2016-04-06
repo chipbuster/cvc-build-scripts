@@ -14,12 +14,12 @@ source utils.sh
 
 TARGET_SYS_CONFIG=SYS_configs/"$I_AM".sh
 
-set +u #Need to allow for unset varibles (like LIBRARY_PATH)
+set +o nounset #Need to allow for unset varibles (like LIBRARY_PATH)
 source $TARGET_SYS_CONFIG     #Source the host configuration files
-set -u
+set -o nounset
 
 # If needed, load modules. This is not needed if on osx or modlist is empty
-if [ "$BUILD_OS" = "osx" ] || [ ${#HOST_MODLIST [@]} = 0 ]; then
+if [ "$BUILD_OS" = "osx" ] || [ ${#HOST_MODLIST[@]} = 0 ]; then
   : #No-op. No modules need to be loaded for this host
 else
   for MODULE in $HOST_MODLIST; do
@@ -48,9 +48,9 @@ for TARGET in ${BUILD_TARGETS[@]}; do
 
   # Load project modules, if any (the ="" syntax provides a default empty string)
   # so that we don't trigger the undefined variable checker
-  if [ -n ${PROJ_MODLIST=""} ] && [ $BUILD_OS -ne "osx" ]; then
-    for MODULE in $PROJ_MODLIST; do
-      module load $PROJ_MODLIST
+  if [ -n ${PROJ_MODLIST=""} ] && [ ! "$BUILD_OS" = "osx" ]; then
+    for MODULE in ${PROJ_MODLIST[@]}; do
+      module load ${PROJ_MODLIST[@]}
     done
   fi
 
@@ -88,13 +88,16 @@ for TARGET in ${BUILD_TARGETS[@]}; do
   export >> $LOG_FILE
   echo "===BUILD BEGINS HERE===" >> $LOG_FILE
 
-  # Build the project and send output to the logfile.
+  # Build the project and send output to the logfile. If anything goes wrong
+  # during the build, error out and send an email.
+  set -o errexit
   build_project >> $LOG_FILE 2>&1
+  set +o errexit
 
   # Before we move on to the next build, unload any modules that are project-only
-  if [ -n ${PROJ_MODLIST=""} ] && [ $BUILD_OS -ne "osx" ]; then
-    for MODULE in $PROJ_MODLIST; do
-      module unload $PROJ_MODLIST
+  if [ -n ${PROJ_MODLIST=""} ] && [ ! "$BUILD_OS" = "osx" ]; then
+    for MODULE in ${PROJ_MODLIST[@]}; do
+      module unload ${PROJ_MODLIST[@]}
     done
   fi
 
