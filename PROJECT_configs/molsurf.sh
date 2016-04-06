@@ -6,17 +6,14 @@ export SVN_URL=https://svn.ices.utexas.edu/repos/cvc/trunk/MolSurf
 
 export BUILD_TYPE=Release
 
-LOG_FILE=$PROJ_NAME.out
+
 
 function build_project()
 {
   #These tasks will have been done for us by the time this fn is called
-  #cd $WORK_DIR
-  #rm -rf $PROJ_NAME
-  #svn co $SVN_URL $PROJ_NAME
-  #mkdir ${PROJ_NAME}_build
-  #cd ${PROJ_NAME}_build
-  #SRC_DIR=${PROJ_NAME}_build
+  #We will have a clean $SRC_DIR where the sources are stored
+  #We will be inside the build directory $BUILD_DIR
+  #We will have a $LOG_FILE where we should store our build output
 
   export LIBRARY_PATH=/usr/local/gfortran/lib:$LIBRARY_PATH
 

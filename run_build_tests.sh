@@ -58,10 +58,14 @@ cd $WORK_DIR #Get back into the main work directory
     rm -rf ${PROJ_NAME}_buildold &
   fi
 
-  svn co $SVN_URL $PROJ_NAME
-  mkdir ${PROJ_NAME}_build
-  cd ${PROJ_NAME}_build
-  SRC_DIR=$WORK_DIR/$PROJ_NAME
+  # Define important directories and files
+  BUILD_DIR="$WORK_DIR/${PROJ_NAME}_build"
+  SRC_DIR="$WORK_DIR/$PROJ_NAME"
+  LOG_FILE="$BUILD_DIR/${PROJ_NAME}.out"
+
+  svn co $SVN_URL $SRC_DIR
+  mkdir $BUILD_DIR
+  cd $BUILD_DIR
 
   echo "Building $PROJ_NAME"
 
