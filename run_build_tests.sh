@@ -48,7 +48,7 @@ for TARGET in ${BUILD_TARGETS[@]}; do
 
   # Load project modules, if any (the ="" syntax provides a default empty string)
   # so that we don't trigger the undefined variable checker
-  if [ -n ${PROJ_MODLIST=""} ]; then
+  if [ -n ${PROJ_MODLIST=""} ] && [ $BUILD_OS -ne "osx" ]; then
     for MODULE in $PROJ_MODLIST; do
       module load $PROJ_MODLIST
     done
@@ -92,7 +92,7 @@ for TARGET in ${BUILD_TARGETS[@]}; do
   build_project >> $LOG_FILE 2>&1
 
   # Before we move on to the next build, unload any modules that are project-only
-  if [ -n ${PROJ_MODLIST=""} ]; then
+  if [ -n ${PROJ_MODLIST=""} ] && [ $BUILD_OS -ne "osx" ]; then
     for MODULE in $PROJ_MODLIST; do
       module unload $PROJ_MODLIST
     done

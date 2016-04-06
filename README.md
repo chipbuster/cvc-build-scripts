@@ -8,13 +8,23 @@ triggered.
 
 #### Quick Start
 
+
+
 #### Installation
 
 
 
-#### Project vs Host settings
+#### Settings Details
 
-There are two aspects to building a project: the project itself and the host.
+###### Config Settings
+
+These are found in configs.sh and tell the build system what to do. `I_AM` is the
+host identifier, which is used to figure out which host settings to use.
+
+`BUILD_TARGETS` is a list of targets to be built. For each entry in `BUILD_TARGETS`,
+a corresponding `.sh` should exist in PROJECT_configs.
+
+`GUARDIANS` is a list of email addresses to contact if something breaks.
 
 ###### Host Settings
 
@@ -25,7 +35,8 @@ specific machines.
 
 Each host settings file should export at least the following variables:
 
-* `BUILD_OS`: A string identifying the operating system the build is on. For ICES machines, this should be one of `sl6` (Scientific Linux), `c7` (CentOS), or `osx`.
+* `BUILD_OS`: A string identifying the operating system the build is on. For
+ICES machines, this should be one of `sl6` (Scientific Linux), `c7` (CentOS), or `osx`.
 * `BUILD_HOST`: A string identifying the system that the build takes place on
   (for example, a hostname)
 * `HOST_MODLIST`: An array of modules that need to be loaded for most projects
@@ -39,9 +50,13 @@ In addition, the host files may optionally export the following additional varia
 
 * `MAIL_ERR_TO`: This will cause the script to send any error logs to the listed
    email address. May send multiple emails if combined with crontab mail--be careful!
-* `NPES`: The number of processors available for build on this computer. If not set, the build scripts will default to 1, which will be slooooooooowwwww.
+* `NPES`: The number of processors available for build on this computer. If not
+  set, the build scripts will default to 1, which will be slooooooooowwwww. Note:
+  you should set this to take advantage of hyperthreading for fastest builds.
 * Other environmental variables that may be necessary, e.g. `FC`, `CC`, and `CXX` on
-  OS X w/ MacPorts, or `QT_SELECT` on Arch Linux. Make sure these are exported by either placing `export` in front of the definition or by placing `export VARNAME` further down in the file.
+  OS X w/ MacPorts, or `QT_SELECT` on Arch Linux. Make sure these are exported
+  by either placing `export` in front of the definition or by placing
+  `export VARNAME` further down in the file.
 
 ###### Project Settings
 
