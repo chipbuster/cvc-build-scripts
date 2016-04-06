@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-set -e #Exit on error
-set -u #Exit if variable is undefined
+set -o errexit #Exit on error
+set -o nounset #Exit if undef. variable is used
+set -o pipefail #Exit if a command in a pipe fails
 
 SCRIPT_DIR=##INSTALLPATH##
 cd $SCRIPT_DIR
@@ -31,12 +32,18 @@ if [ -z "$NPES" ]; then
   NPES=1
 fi
 
+# At this point, we have done all the preconfiguration needed to ensure
+# a sane build environment. If something fails from now on, we assume it
+# is an issue with the build. We keep nounset on, because rm on undefined
+# variables is potentially catastrophic, but we allow errors to occur.
+set +o errexit
+
 # Move to where the builds/checkouts should occur
 
-  cd $WORK_DIR #Get back into the main work directory
+cd $WORK_DIR #Get back into the main work directory
 
   #Source the script for our current build target
-  source $SCRIPT_DIR/PROJECT_configs/${TARGET}.sh 
+  source $SCRIPT_DIR/PROJECT_configs/${TARGET}.sh
 
   # Removing the entire directory can take time (esp. for large builds)
   # Speed this up by renaming it so we can remove it in the background
