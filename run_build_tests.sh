@@ -40,7 +40,9 @@ set +o errexit
 
 # Move to where the builds/checkouts should occur
 
-cd $WORK_DIR #Get back into the main work directory
+
+for TARGET in $BUILD_TARGETS; do
+  cd $WORK_DIR #Get back into the main work directory
 
   #Source the script for our current build target
   source $SCRIPT_DIR/PROJECT_configs/${TARGET}.sh
@@ -63,13 +65,24 @@ cd $WORK_DIR #Get back into the main work directory
   SRC_DIR="$WORK_DIR/$PROJ_NAME"
   LOG_FILE="$BUILD_DIR/${PROJ_NAME}.out"
 
-  svn co $SVN_URL $SRC_DIR
+  svn co $SVN_URL $SRC_DIR &> /dev/null #We don't need to see the SVN co
   mkdir $BUILD_DIR
   cd $BUILD_DIR
 
-  echo "Building $PROJ_NAME"
+  # Open the logfile with info about the build
+  echo "===This is $PROJ_NAME on $BUILD_HOST ($BUILD_OS)===" >> $LOG_FILE
+  echo "Modules loaded by HOST are:  ${HOST_MODLIST:-None}" >> $LOG_FILE
+  echo "Modules loaded by PROJECT are:  ${PROJ_MODLIST:-None}" >> $LOG_FILE
+  echo "We are building with $NPES processors" >> $LOG_FILE
+  echo "Here is the SVN Repository info" >> $LOG_FILE
+  svn info $SRC_DIR >> $LOG_FILE
+  echo "\n\n" >> $LOG_FILE
+  echo "Here is the current environment:" >> $LOG_FILE
+  export >> $LOG_FILE
+  echo "===BUILD BEGINS HERE===" >> $LOG_FILE
 
-  build_project || raise_alert $GUARDIAN $WORK_DIR/$PROJ_NAME
+  # Build the project and send output to the logfile.
+  build_project >> $LOG_FILE 2>&1
 
-  cd $WORK_DIR
+  # || raise_alert $GUARDIANS $WORK_DIR/$PROJ_NAME  #Guardians are temporarily offline
 done
