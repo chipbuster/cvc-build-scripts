@@ -28,7 +28,7 @@ Each host settings file should export at least the following variables:
 to build (this includes things like core modules, gcc, and cmake). These
  modules will be loaded when the main build script is first called and will
  remain loaded while all build tests are run.
-* `WORKDIR`: A directory where code checkouts and build directories can be made.
+* `WORK_DIR`: A directory where code checkouts and build directories can be made.
 This directory should be user-writeable and local (i.e. **not** NFS or SSHFS)
 
 In addition, the host files may optionally export the following additional variables:
@@ -51,8 +51,6 @@ Each project settings file should export at least the following variables:
 * `PROJ_NAME`: A string identifying the project. This will be used to report
    errors and is also the name given to directories/files
 * `SVN_URL`: The URL used to fetch the source code (using `svn clone`)
-* `BUILD_TYPE`: An array containing the build types to be passed to
-  `-DCMAKE_BUILD_TYPE`. Usually, just `Debug` and `Release` is enough.
 
 Optionally, a project may also export the following:
 
@@ -60,13 +58,13 @@ Optionally, a project may also export the following:
   be loaded prior to compilation and unloaded afterwards, to avoid contaminating
   the environment for subsequent builds.
 * `VAR_NEEDS`: A list of environmental variables needed to execute the build.
-  If any of them are not defined by the host configuration, the build will exit
-  instead of continuing with undefined variables.
 * Other environmental variables necessary to the build. These should be `unset`
   at the conclusion of the build to avoid contaminating the build environment.
 
-Each project should also export a function named `build_software()` that will
+Each project should also export a function named `build_project()` that will
 run the necessary steps to build the software. This function can expect that
-all of the host modules will be loaded. It will need to load all of its build modules,
+all of the host modules will be loaded, and that there will be a fresh copy of the project at `$WORK_DIR/$PROJ_NAME`. It will need to load all of its build modules,
 run the build system, and then unload its modules and clear any environmental variables
 it set. It may optionally depend on `BUILD_OS` being set.
+
+Note: you should make multiple project scripts for each build type (e.g. if you want to build something in debug + release modes, you should make proj_debug.sh and proj_release.sh with appropriate project names.)
