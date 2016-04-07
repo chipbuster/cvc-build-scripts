@@ -22,9 +22,7 @@ set -o nounset
 if [ "$BUILD_OS" = "osx" ] || [ ${#HOST_MODLIST[@]} = 0 ]; then
   : #No-op. No modules need to be loaded for this host
 else
-  for MODULE in $HOST_MODLIST; do
-    module load $MODULE
-  done
+  module load $HOST_MODLIST
 fi
 
 # If we haven't set a processor count in host config, default to 1
@@ -40,7 +38,7 @@ set +o errexit
 
 # Move to where the builds/checkouts should occur
 
-for TARGET in ${BUILD_TARGETS[@]}; do
+for TARGET in "${BUILD_TARGETS[@]}"; do
   cd $WORK_DIR #Get back into the main work directory
 
   #Source the script for our current build target
@@ -48,10 +46,8 @@ for TARGET in ${BUILD_TARGETS[@]}; do
 
   # Load project modules, if any (the ="" syntax provides a default empty string)
   # so that we don't trigger the undefined variable checker
-  if [ -n ${PROJ_MODLIST=""} ] && [ ! "$BUILD_OS" = "osx" ]; then
-    for MODULE in ${PROJ_MODLIST[@]}; do
-      module load ${PROJ_MODLIST[@]}
-    done
+  if [ -n "${PROJ_MODLIST=""}" ] && [ ! "$BUILD_OS" = "osx" ]; then
+    module load $PROJ_MODLIST
   fi
 
   # Removing the entire directory can take time (esp. for large builds)
@@ -95,9 +91,9 @@ for TARGET in ${BUILD_TARGETS[@]}; do
   set +o errexit
 
   # Before we move on to the next build, unload any modules that are project-only
-  if [ -n ${PROJ_MODLIST=""} ] && [ ! "$BUILD_OS" = "osx" ]; then
-    for MODULE in ${PROJ_MODLIST[@]}; do
-      module unload ${PROJ_MODLIST[@]}
+  if [ -n "${PROJ_MODLIST=""}" ] && [ ! "$BUILD_OS" = "osx" ]; then
+    for MODULE in "${PROJ_MODLIST[@]}"; do
+      module unload $MODULE
     done
   fi
 

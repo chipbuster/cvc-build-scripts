@@ -23,13 +23,15 @@ mkdir $IFOLDER
 cp -r PROJECT_configs $IFOLDER/PROJECT_configs
 cp -r SYS_configs $IFOLDER/SYS_configs
 
-for file in (configs.sh utils.sh run_build_test.sh); do
+OTHERFILES=(configs.sh utils.sh run_build_test.sh)
+
+for file in "${OTHERFILES[@]}"; do
   cp $file $IFOLDER
 done
 
-if [ $(uname) = "Linux" ]; then
+if [ "$(uname)" = "Linux" ]; then
   sed -i s;##INSTALLPATH##;$IFOLDER;g $IFOLDER/run_build_test.sh
-elif [ $(uname) = "Darwin" ]; then
+elif [ "$(uname)" = "Darwin" ]; then
   # I really hope this is the OS X sed or you have nobody to blame but yourself
   /usr/bin/sed -i '' s;##INSTALLPATH##;$IFOLDER;g $IFOLDER/run_build_test.sh
 else
