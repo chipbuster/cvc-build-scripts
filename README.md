@@ -8,11 +8,47 @@ triggered.
 
 #### Quick Start
 
+To simply test established builds, follow these instructions. To write
+scripts for new projects and systems, see "Writing new configurations".
 
+First, edit the `configs.sh` file. Fill in the approriate hostname under
+`I_AM`, place the names of the projects you want to build into the
+`BUILD_TARGETS` array, and place emails under `GUARDIANS`
 
-#### Installation
+Then from this directory, run
 
+    ./install.sh /path/to/installation
 
+Go to the directory where the scripts were installed and run the
+`run_build_test.sh` script to test the build.
+
+#### Writing new configurations
+
+To write a new host configuration, copy one of the skeletons in the
+`SYS_configs` directory that corresponds to your OS. Then set the four
+variables listed as mandatory in the Host Settings section of this README.
+
+Note that if you do not set NPES, the script will attempt to default to
+the number of logical cores in the system. If it cannot detect this, it
+will default to 1.
+
+Also be aware that if the OS does not have a native QT install (OS X), you
+must provide `QMAKE_EXECUTABLE` and `$QT_GH_FILE`.
+
+To write a new project configuration, you need to provide the components
+listed in the Project Settings section of this README. A few gotchas for
+the project settings:
+
+*  Using undefined variables will crash the build--this includes things like
+`LIBRARY_PATH` (see the Undefined Variables section for details on how to
+  avoid this)
+* You must use `SRC_DIR`, `BUILD_DIR`, and `LOG_FILE` to access the source
+folder, build folder, and log file respectively. There are no guarantees
+that these varibles will not be changed in the future.
+* If `QMAKE_EXECUTABLE` and `$QT_GH_FILE` are set, QT may not exist in the
+`PATH`. This will confuse cmake if not accounted for (see the texmol build
+script for an example of how to deal with this).
+* YOU CANNOT USE UNDEFINED VARIABLES IN THE BUILD FUNCTION.
 
 #### Settings Details
 
@@ -33,7 +69,7 @@ modules that need to be loaded on the local system. There are three skeleton
 files (sl6.sh, c7.sh, and osx.sh) that can be used to create hostfiles for
 specific machines.
 
-Each host settings file should export at least the following variables:
+Each host settings file **must** export at least the following variables:
 
 * `BUILD_OS`: A string identifying the operating system the build is on. For
 ICES machines, this should be one of `sl6` (Scientific Linux), `c7` (CentOS), or `osx`.
@@ -48,8 +84,6 @@ This directory should be user-writeable and local (i.e. **not** NFS or SSHFS)
 
 In addition, the host files may optionally export the following additional variables:
 
-* `MAIL_ERR_TO`: This will cause the script to send any error logs to the listed
-   email address. May send multiple emails if combined with crontab mail--be careful!
 * `NPES`: The number of processors available for build on this computer. If not
   set, the build scripts will default to 1, which will be slooooooooowwwww. Note:
   you should set this to take advantage of hyperthreading for fastest builds.
@@ -63,7 +97,7 @@ In addition, the host files may optionally export the following additional varia
 Project configurations are things like the SVN repository, needed libraries,
 and build commands. Any of the existing configs should serve as examples.
 
-Each project settings file should export at least the following variables:
+Each project settings file **must** export at least the following variables:
 
 * `PROJ_NAME`: A string identifying the project. This will be used to report
    errors and is also the name given to directories/files
@@ -74,7 +108,6 @@ Optionally, a project may also export the following:
 * `PROJ_MODLIST`: An array of modules needed to build the program. These will
   be loaded prior to compilation and unloaded afterwards, to avoid contaminating
   the environment for subsequent builds.
-* `VAR_NEEDS`: A list of environmental variables needed to execute the build.
 * Other environmental variables necessary to the build. These should be `unset`
   at the conclusion of the build to avoid contaminating the build environment.
 
@@ -84,12 +117,22 @@ all of the host modules will be loaded, and that there will be a fresh copy
 of the project at `$SRC_DIR`, that it will be in the directory `$BUILD_DIR`, and
 that there will be a defined `$LOG_FILE`.
 
-Any other variables may not be defined, and this system is set to error if
-undefined variables are used. To get around this issue, use parameter expansion:
-`${VAR=""}` will expand to `$VAR` if it is defined and `""` otherwise. This
-allows you to check for potentially undefined variables without tripping
-the undefined var checker.
-
-Note: you should make multiple project scripts for each build type
+You should make multiple project scripts for each build type
 (e.g. if you want to build something in debug + release modes, you should make
   proj_debug.sh and proj_release.sh with appropriate project names.)
+
+#### Undefined Variables
+
+Note that some parts of the build scripts (most notably the `build_project`
+functions) will fail if an undefined variable is used. This may be an issue if
+you are attempting to append to an envar, e.g. the following will fail if
+`LIBRARY_PATH` is not defined:
+
+        LIBRARY_PATH = /my/path:$LIBRARY_PATH
+
+To get around this issue, use parameter expansion:
+`${VAR=""}` will expand to `$VAR` if it is defined and `""` otherwise. This
+allows you to check for potentially undefined variables without tripping
+the undefined var checker. The fix for the above is to use
+
+        LIBRARY_PATH = /my/path:${LIBRARY_PATH=""}

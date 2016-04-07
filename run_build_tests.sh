@@ -50,8 +50,7 @@ fi
 # variables is potentially catastrophic, but we allow errors to occur.
 set +o errexit
 
-# Move to where the builds/checkouts should occur
-
+# Loop over the build targets, building each one in turn
 for TARGET in "${BUILD_TARGETS[@]}"; do
   cd $WORK_DIR #Get back into the main work directory
 
@@ -61,10 +60,10 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
   # Load project modules, if any (the ="" syntax provides a default empty string)
   # so that we don't trigger the undefined variable checker
   if [ -n "${PROJ_MODLIST=""}" ] && [ ! "$BUILD_OS" = "osx" ]; then
-    module load $PROJ_MODLIST
+    module load "${PROJ_MODLIST[@]}"
   fi
 
-  # Removing the entire directory can take time (esp. for large builds)
+  # Removing the project directory can take time (esp. for large builds)
   # Speed this up by renaming it so we can remove it in the background
   if [ -e $PROJ_NAME ]; then
     mv $PROJ_NAME ${PROJ_NAME}_old
@@ -77,7 +76,8 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
     rm -rf ${PROJ_NAME}_buildold &
   fi
 
-  # Define important directories and files
+  # Define important directories and files. These 3 MUST be defined for
+  # the project build scripts to work.
   BUILD_DIR="$WORK_DIR/${PROJ_NAME}_build"
   SRC_DIR="$WORK_DIR/$PROJ_NAME"
   LOG_FILE="$BUILD_DIR/${PROJ_NAME}.out"
@@ -88,19 +88,19 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
 
   # Open the logfile with info about the build
   echo "===This is $PROJ_NAME on $BUILD_HOST ($BUILD_OS)===" >> $LOG_FILE
-  echo "Modules loaded by HOST are: ${HOST_MODLIST[*]:-None}" >> $LOG_FILE
-  echo "Modules loaded by PROJECT are: ${PROJ_MODLIST[*]:-None}" >> $LOG_FILE
+  echo "Modules specified by HOST are: ${HOST_MODLIST[*]:-None}" >> $LOG_FILE
+  echo "Modules specified by PROJECT are: ${PROJ_MODLIST[*]:-None}" >> $LOG_FILE
   echo "We are building with $NPES processors" >> $LOG_FILE
   echo "Here is the SVN Repository info" >> $LOG_FILE
   svn info $SRC_DIR >> $LOG_FILE
   echo "\n\n" >> $LOG_FILE
   echo "Here is the current environment:" >> $LOG_FILE
-  export >> $LOG_FILE
+  printenv >> $LOG_FILE
   echo "===BUILD BEGINS HERE===" >> $LOG_FILE
 
   # Build the project and send output to the logfile. If anything goes wrong
-  # during the build, error out and send an email.
-  build_project >> $LOG_FILE 2>&1
+  # during the build, error out.
+  build_project >> $LOG_FILE 2>&1 || handle_build_error
 
   # Before we move on to the next build, unload any modules that are project-only
   if [ -n "${PROJ_MODLIST=""}" ] && [ ! "$BUILD_OS" = "osx" ]; then

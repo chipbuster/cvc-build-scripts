@@ -17,3 +17,12 @@ function raise_alert()
   #this error or not.
   echo "Logged error" >> /tmp/errlogged.txt
 }
+
+
+# Bash dynamic scoping ensures that we have all the envars that were
+#available to the build_project function.
+function handle_build_error()
+{
+  
+
+}
