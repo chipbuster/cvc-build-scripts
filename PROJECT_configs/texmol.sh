@@ -13,7 +13,7 @@ function build_project()
   #We will be inside the build directory $BUILD_DIR
   #We will have a $LOG_FILE where we should store our build output
 
-  export LIBRARY_PATH=/usr/local/gfortran/lib:$LIBRARY_PATH
+  export LIBRARY_PATH=/usr/local/gfortran/lib:${LIBRARY_PATH=""}
 
   cmake $SRC_DIR -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPRE_BUILD=ON
   make --jobs=$NPES

@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+## This script is at the heart of the build system. It reads configuration
+# options from config.sh and sources the appropriate config scripts
+# to build the specified projects.
+
+# Note that this script will not send notifications if it fails outside of the
+# project builds, so it is best to run this from another script.
+
 set -o errexit #Exit on error
 set -o nounset #Exit if undef. variable is used
 set -o pipefail #Exit if a command in a pipe fails
@@ -25,9 +32,16 @@ else
   module load $HOST_MODLIST
 fi
 
-# If we haven't set a processor count in host config, default to 1
+# If we haven't set a processor count in host config, try to find default value
+# If can't find, use 1 (this is slooooooooow)
 if [ ! -n "$NPES" ]; then
-  export NPES=1
+  if [ "$(uname)" = "Linux" ]; then
+    NPES=$(nproc)
+  elif [ "$(uname)" = "Darwin" ]; then
+    NPES=$(sysctl -n hw.ncpu)
+  else
+    NPES=1
+  fi
 fi
 
 # At this point, we have done all the preconfiguration needed to ensure
@@ -74,8 +88,8 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
 
   # Open the logfile with info about the build
   echo "===This is $PROJ_NAME on $BUILD_HOST ($BUILD_OS)===" >> $LOG_FILE
-  echo "Modules loaded by HOST are:  ${HOST_MODLIST:-None}" >> $LOG_FILE
-  echo "Modules loaded by PROJECT are:  ${PROJ_MODLIST:-None}" >> $LOG_FILE
+  echo "Modules loaded by HOST are:  ${HOST_MODLIST[*]:-None}" >> $LOG_FILE
+  echo "Modules loaded by PROJECT are:  ${PROJ_MODLIST[*]:-None}" >> $LOG_FILE
   echo "We are building with $NPES processors" >> $LOG_FILE
   echo "Here is the SVN Repository info" >> $LOG_FILE
   svn info $SRC_DIR >> $LOG_FILE
