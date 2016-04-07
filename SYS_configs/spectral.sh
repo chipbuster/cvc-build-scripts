@@ -4,17 +4,17 @@
 
 echo "Using settings for Spectral (OS X 10.11)"
 
-BUILD_OS=osx
-BUILD_HOST=spectral
+export BUILD_OS=osx
+export BUILD_HOST=spectral
 
 # Modules must be listed in the order they are to be loaded
-HOST_MODLIST=()
+export HOST_MODLIST=()
 
 # Where should projects be downloaded/built?
-WORK_DIR=/tmp
+export WORK_DIR=/tmp
 
 # Spectral has 4 available cores
-NPES=8
+export NPES=8
 
 # Email error logs to this email address
 # MAIL_ERR_TO=example@user.com
