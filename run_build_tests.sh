@@ -88,8 +88,8 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
 
   # Open the logfile with info about the build
   echo "===This is $PROJ_NAME on $BUILD_HOST ($BUILD_OS)===" >> $LOG_FILE
-  echo "Modules loaded by HOST are:  ${HOST_MODLIST[*]:-None}" >> $LOG_FILE
-  echo "Modules loaded by PROJECT are:  ${PROJ_MODLIST[*]:-None}" >> $LOG_FILE
+  echo "Modules loaded by HOST are: ${HOST_MODLIST[*]:-None}" >> $LOG_FILE
+  echo "Modules loaded by PROJECT are: ${PROJ_MODLIST[*]:-None}" >> $LOG_FILE
   echo "We are building with $NPES processors" >> $LOG_FILE
   echo "Here is the SVN Repository info" >> $LOG_FILE
   svn info $SRC_DIR >> $LOG_FILE
