@@ -29,7 +29,7 @@ set -o nounset
 if [ "$BUILD_OS" = "osx" ] || [ ${#HOST_MODLIST[@]} = 0 ]; then
   : #No-op. No modules need to be loaded for this host
 else
-  module load $HOST_MODLIST
+  module load "${HOST_MODLIST[@]}"
 fi
 
 # If we haven't set a processor count in host config, try to find default value

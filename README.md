@@ -80,8 +80,16 @@ Optionally, a project may also export the following:
 
 Each project should also export a function named `build_project()` that will
 run the necessary steps to build the software. This function can expect that
-all of the host modules will be loaded, and that there will be a fresh copy of the project at `$WORK_DIR/$PROJ_NAME`. It will need to load all of its build modules,
-run the build system, and then unload its modules and clear any environmental variables
-it set. It may optionally depend on `BUILD_OS` being set.
+all of the host modules will be loaded, and that there will be a fresh copy
+of the project at `$SRC_DIR`, that it will be in the directory `$BUILD_DIR`, and
+that there will be a defined `$LOG_FILE`.
 
-Note: you should make multiple project scripts for each build type (e.g. if you want to build something in debug + release modes, you should make proj_debug.sh and proj_release.sh with appropriate project names.)
+Any other variables may not be defined, and this system is set to error if
+undefined variables are used. To get around this issue, use parameter expansion:
+`${VAR=""}` will expand to `$VAR` if it is defined and `""` otherwise. This
+allows you to check for potentially undefined variables without tripping
+the undefined var checker.
+
+Note: you should make multiple project scripts for each build type
+(e.g. if you want to build something in debug + release modes, you should make
+  proj_debug.sh and proj_release.sh with appropriate project names.)
