@@ -86,9 +86,7 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
 
   # Build the project and send output to the logfile. If anything goes wrong
   # during the build, error out and send an email.
-  set -o errexit
   build_project >> $LOG_FILE 2>&1
-  set +o errexit
 
   # Before we move on to the next build, unload any modules that are project-only
   if [ -n "${PROJ_MODLIST=""}" ] && [ ! "$BUILD_OS" = "osx" ]; then
