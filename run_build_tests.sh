@@ -95,6 +95,8 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
   echo "===This is $PROJ_NAME on $BUILD_HOST ($BUILD_OS)===" >> $LOG_FILE
   echo "Modules specified by HOST are: ${HOST_MODLIST[*]:-None}" >> $LOG_FILE
   echo "Modules specified by PROJECT are: ${PROJ_MODLIST[*]:-None}" >> $LOG_FILE
+  echo "Module shown by module list are:" >> $LOG_FILE
+  module list >> $LOG_FILE
   echo "We are building with $NPES processors" >> $LOG_FILE
   echo "Here is the SVN Repository info" >> $LOG_FILE
   svn info $SRC_DIR >> $LOG_FILE
@@ -105,7 +107,7 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
 
   # Build the project and send output to the logfile. If anything goes wrong
   # during the build, error out.
-  build_project >> $LOG_FILE 2>&1
+  build_project >> $LOG_FILE 2>&1 || handle_build_error
 
   # Before we move on to the next build, unload any modules that are project-only
   if [ -n "${PROJ_MODLIST=""}" ] && [ ! "$BUILD_OS" = "OSX" ]; then

@@ -53,7 +53,8 @@ function handle_build_error()
    | grep "^r" | awk '{print $3}' | sort | uniq | tr '\n' ' ' ) )
 
   # Email every user that's involved
-  mail -s "$SUBJECT" chipbuster@gmail.com <<ENDMAIL
+  for USER in "${USERS[@]}"; do
+  mail -s "$SUBJECT" "${USER}@ices.utexas.edu" <<ENDMAIL
 
 Hello there! This is CVC BuildBot. We have detected a broken nightly build on
 the system \"$I_AM\" for the project $PROJ_NAME. Build Bot has detected that you
@@ -65,7 +66,7 @@ to check their commits.
 
 The users who have committed in the last two days are:
 
-  ${USERS[*]-"None"}
+  ${USERS[*]-"ERROR:NO USERS FOUND"}
 
 BuildBot has diligently recorded data about the failing build. These include
 build host info, svn info, environmental data, and the output of the build
@@ -80,5 +81,6 @@ at $MAINTAINER.
 
 ENDMAIL
 
+done
 
 }

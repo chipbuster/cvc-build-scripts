@@ -77,7 +77,7 @@ ICES machines, this should be one of `SciLinux6` (Scientific Linux),
 * `BUILD_HOST`: A string identifying the system that the build takes place on
   (for example, a hostname)
 * `HOST_MODLIST`: An array of modules that need to be loaded for most projects
-to build (this includes things like core modules, gcc, and cmake). These
+to build (this includes at least the os modules, gcc, and cmake). These
  modules will be loaded when the main build script is first called and will
  remain loaded while all build tests are run. If no modules need to be loaded, simply make an empty list.
 * `WORK_DIR`: A directory where code checkouts and build directories can be made.
@@ -108,7 +108,8 @@ Optionally, a project may also export the following:
 
 * `PROJ_MODLIST`: An array of modules needed to build the program. These will
   be loaded prior to compilation and unloaded afterwards, to avoid contaminating
-  the environment for subsequent builds.
+  the environment for subsequent builds. These modules should **not**
+  include cmake, gcc, or the OS module.
 * Other environmental variables necessary to the build. These should be `unset`
   at the conclusion of the build to avoid contaminating the build environment.
 
