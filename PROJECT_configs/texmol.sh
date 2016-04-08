@@ -19,7 +19,8 @@ function build_project()
   make --jobs=$NPES
 
   #Do we need to use a non-standard QT location?
-  if [ -n "$QMAKE_EXECUTABLE" ] && [ -n "$QT_GH_FILE" ]; then
+  # shellcheck disable=SC2157
+  if [ -n "{$QMAKE_EXECUTABLE=""}" ] && [ -n "${QT_GH_FILE=""}" ]; then
     cmake $SRC_DIR -DPRE_BUILD=OFF -DQT_QMAKE_EXECUTABLE=$QMAKE_EXECUTABLE
     cmake $SRC_DIR -DQT4_QGLOBAL_H_FILE=$QT_GH_FILE -DDESIRED_QT_VERSION=4
   else

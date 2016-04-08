@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function raise_alert()
+function message_guardians()
 {
   ATTACHMENT="$2"
 
@@ -20,9 +20,9 @@ function raise_alert()
 
 
 # Bash dynamic scoping ensures that we have all the envars that were
-#available to the build_project function.
+# available to the build_project function. Nasty, but effective.
 function handle_build_error()
 {
-  
+  test
 
 }
