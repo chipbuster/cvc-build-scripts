@@ -13,7 +13,7 @@ export BUILD_HOST=c7
 export HOST_MODLIST=("c7" "gcc/5.2" "cmake/3.3.2")
 
 # Where should projects be downloaded/built?
-export WORK_DIR=/tmp
+export WORK_DIR=/workspace/svn_software
 
 # Email error logs to this email address
 # MAIL_ERR_TO=example@user.com

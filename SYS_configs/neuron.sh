@@ -11,7 +11,7 @@ export BUILD_HOST=sl6
 export HOST_MODLIST=("sl6" "gcc/4.8" "cmake/2.8.9")
 
 # Where should projects be downloaded/built?
-export WORK_DIR=/tmp
+export WORK_DIR=/workspace/svn_software
 
 #Neuron has 4 cores :(
 export NPES=4

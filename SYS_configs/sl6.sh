@@ -13,7 +13,7 @@ export BUILD_HOST=sl6
 export HOST_MODLIST=("sl6" "gcc/4.8" "cmake/2.8.9")
 
 # Where should projects be downloaded/built?
-export WORK_DIR=/tmp
+export WORK_DIR=/workspace/svn_software
 
 # SciLinux 6 uses QT3
 export QT_VERSION=3

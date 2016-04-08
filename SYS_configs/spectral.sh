@@ -11,7 +11,7 @@ export BUILD_HOST=spectral
 export HOST_MODLIST=()
 
 # Where should projects be downloaded/built?
-export WORK_DIR=/tmp
+export WORK_DIR=/workspace/svn_software
 
 # Spectral has 4 available cores
 export NPES=8

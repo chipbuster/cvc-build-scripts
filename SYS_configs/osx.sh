@@ -13,7 +13,7 @@ export BUILD_HOST=osx
 export HOST_MODLIST=()
 
 # Where should projects be downloaded/built?
-export WORKDIR=/tmp
+export WORK_DIR=/workspace/svn_software
 
 # Email error logs to this email address
 # MAIL_ERR_TO=example@user.com
