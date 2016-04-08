@@ -6,8 +6,8 @@ echo "WARNING: You should not use these settings directly! If the build fails,
       you will not know which host it came from! Intead, copy this to a new
       config and make sure to change the BUILD_HOST to a hostname."
 
-export BUILD_OS=osx
-export BUILD_HOST=osx
+export BUILD_OS=OSX
+export BUILD_HOST=OSX
 
 # Modules must be listed in the order they are to be loaded
 export HOST_MODLIST=()

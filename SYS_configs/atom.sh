@@ -4,7 +4,7 @@
 
 echo "Using settings for Atom (Scientific Linux 6)"
 
-export BUILD_OS=sl6
+export BUILD_OS=SciLinux6
 export BUILD_HOST=atom
 
 # Modules must be listed in the order they are to be loaded

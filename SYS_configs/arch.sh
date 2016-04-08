@@ -14,7 +14,8 @@ export HOST_MODLIST=()
 export WORK_DIR=/tmp
 
 #Neuron has 4 cores :(
-export NPES=$(nproc)
+export NPES
+NPES=$(nproc)
 
 export QT_SELECT=4
 

@@ -14,8 +14,8 @@ function build_project()
 
   export LIBRARY_PATH=/usr/local/gfortran/lib:$LIBRARY_PATH
 
-  cmake $SRC_DIR -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPRE_BUILD=ON
-  make --jobs=$NPES
-  cmake $SRC_DIR -DPRE_BUILD=OFF
-  make --jobs=$NPES
+  cmake "$SRC_DIR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DPRE_BUILD=ON
+  make --jobs="$NPES"
+  cmake "$SRC_DIR" -DPRE_BUILD=OFF
+  make --jobs="$NPES"
 }

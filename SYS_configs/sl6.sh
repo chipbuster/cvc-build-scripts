@@ -6,7 +6,7 @@ echo "WARNING: You should not use these settings directly! If the build fails,
       you will not know which host it came from! Intead, copy this to a new
       config and make sure to change the BUILD_HOST to a hostname."
 
-export BUILD_OS=sl6
+export BUILD_OS=SciLinux6
 export BUILD_HOST=sl6
 
 # Modules must be listed in the order they are to be loaded

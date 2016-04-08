@@ -15,16 +15,16 @@ function build_project()
 
   export LIBRARY_PATH=/usr/local/gfortran/lib:${LIBRARY_PATH=""}
 
-  cmake $SRC_DIR -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPRE_BUILD=ON
-  make --jobs=$NPES
+  cmake "$SRC_DIR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DPRE_BUILD=ON
+  make --jobs="$NPES"
 
   #If these variables are set, inform cmake. Otherwise, use defaults
   if [ -n "${QMAKE_EXECUTABLE:-}" ] && [ -n "${QT_GH_FILE:-}" ]; then
-    cmake $SRC_DIR -DPRE_BUILD=OFF -DQT_QMAKE_EXECUTABLE=$QMAKE_EXECUTABLE
-    cmake $SRC_DIR -DQT4_QGLOBAL_H_FILE=$QT_GH_FILE -DDESIRED_QT_VERSION=${QT_VERSION-4}
+    cmake "$SRC_DIR" -DPRE_BUILD=OFF -DQT_QMAKE_EXECUTABLE="$QMAKE_EXECUTABLE"
+    cmake "$SRC_DIR" -DQT4_QGLOBAL_H_FILE="$QT_GH_FILE" -DDESIRED_QT_VERSION="${QT_VERSION-4}"
   else
-    cmake $SRC_DIR -DPRE_BUILD=OFF -DDESIRED_QT_VERSION=${QT_VERSION-4}
+    cmake "$SRC_DIR" -DPRE_BUILD=OFF -DDESIRED_QT_VERSION="${QT_VERSION-4}"
   fi
 
-  make --jobs=$NPES
+  make --jobs="$NPES"
 }

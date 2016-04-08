@@ -4,7 +4,7 @@
 
 echo "Using settings for Thalamus (CentOS 7)"
 
-export BUILD_OS=c7
+export BUILD_OS=CentOS7
 export BUILD_HOST=thalamus
 
 # Modules must be listed in the order they are to be loaded

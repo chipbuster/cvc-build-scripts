@@ -66,13 +66,14 @@ a corresponding `.sh` should exist in PROJECT_configs.
 
 Host configurations are things like paths to the scratch directory and any
 modules that need to be loaded on the local system. There are three skeleton
-files (sl6.sh, c7.sh, and osx.sh) that can be used to create hostfiles for
+files (sl6.sh, c7.sh, and OSX.sh) that can be used to create hostfiles for
 specific machines.
 
 Each host settings file **must** export at least the following variables:
 
 * `BUILD_OS`: A string identifying the operating system the build is on. For
-ICES machines, this should be one of `sl6` (Scientific Linux), `c7` (CentOS), or `osx`.
+ICES machines, this should be one of `SciLinux6` (Scientific Linux),
+`CentOS7` (CentOS), or `OSX`.
 * `BUILD_HOST`: A string identifying the system that the build takes place on
   (for example, a hostname)
 * `HOST_MODLIST`: An array of modules that need to be loaded for most projects

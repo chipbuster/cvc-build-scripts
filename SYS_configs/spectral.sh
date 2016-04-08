@@ -4,7 +4,7 @@
 
 echo "Using settings for Spectral (OS X 10.11)"
 
-export BUILD_OS=osx
+export BUILD_OS=OSX
 export BUILD_HOST=spectral
 
 # Modules must be listed in the order they are to be loaded
