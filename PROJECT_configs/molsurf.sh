@@ -18,10 +18,9 @@ function build_project()
   cmake $SRC_DIR -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPRE_BUILD=ON
   make --jobs=$NPES
 
-  #If the host config specifies these variables, QT should be appropriately set
-  # shellcheck disable=SC2157
-  if [ "{$QMAKE_EXECUTABLE:-undefined}" = "undefined" ] && \
-     [ "${QT_GH_FILE:-undefined}" = "undefined" ]; then
+  #If these variables are set, inform cmake. Otherwise, use defaults
+  if [ ! "{$QMAKE_EXECUTABLE:-undefined}" = "undefined" ] && \
+     [ ! "${QT_GH_FILE:-undefined}" = "undefined" ]; then
     cmake $SRC_DIR -DPRE_BUILD=OFF -DQT_QMAKE_EXECUTABLE=$QMAKE_EXECUTABLE
     cmake $SRC_DIR -DPRE_BUILD=OFF -DQT4_QGLOBAL_H_FILE=$QT_GH_FILE
   else
