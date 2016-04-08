@@ -12,7 +12,6 @@ export MAINTAINER="ksong@ices.utexas.edu"
 
 set -o errexit #Exit on error
 set -o nounset #Exit if undef. variable is used
-set -o pipefail #Exit if a command in a pipe fails
 
 # This is not 100% safe to get the parent dir of the script
 # but it seems to work on all ICES systems
@@ -47,6 +46,12 @@ if [ ! -n "${NPES:-}" ]; then
   else
     NPES=1
   fi
+fi
+
+# If the work directory does not exist, create it
+if [ ! -d "$WORK_DIR" ]; then
+    rm -f "$WORK_DIR"
+    mkdir -p "$WORK_DIR"
 fi
 
 # At this point, we have done all the preconfiguration needed to ensure
@@ -91,7 +96,7 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
   LOG_FILE="$BUILD_DIR/${PROJ_NAME}.out"
 
   #Check out the SVN repo with the cvcsvn user
-  svn co --username cvcsvn $SVN_URL $SRC_DIR &> /dev/null 
+  svn co --username cvcsvn $SVN_URL $SRC_DIR &> /dev/null
   mkdir $BUILD_DIR
   cd $BUILD_DIR
 
@@ -99,8 +104,6 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
   echo "===This is $PROJ_NAME on $BUILD_HOST ($BUILD_OS)===" >> $LOG_FILE
   echo "Modules specified by HOST are: ${HOST_MODLIST[*]:-None}" >> $LOG_FILE
   echo "Modules specified by PROJECT are: ${PROJ_MODLIST[*]:-None}" >> $LOG_FILE
-  echo "Module shown by module list are:" >> $LOG_FILE
-  module list >> $LOG_FILE
   echo "We are building with $NPES processors" >> $LOG_FILE
   echo "Here is the SVN Repository info" >> $LOG_FILE
   svn info $SRC_DIR >> $LOG_FILE
