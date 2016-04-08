@@ -16,7 +16,7 @@ export I_AM=spectral
 
 # Each element of this array should correspond to a script in PROJECT_configs
 # If "proj_derp" is in the array, then PROJECT_configs/proj_derp.sh should exist
-export BUILD_TARGETS=("molsurf" "texmol" "volrover")
+export BUILD_TARGETS=("molsurf" "texmol" "volrover" "f2dock")
 
 # Who should we alert when the build explodes?
 export GUARDIANS=("kcsong+crontab@utexas.edu"
