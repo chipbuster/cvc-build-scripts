@@ -55,6 +55,9 @@ fi
 # variables is potentially catastrophic, but we allow errors to occur.
 set +o errexit
 
+# Will be changed in handle_build_error function if error occurs
+export BUILD_FAILED=FALSE
+
 # Loop over the build targets, building each one in turn
 for TARGET in "${BUILD_TARGETS[@]}"; do
   cd $WORK_DIR #Get back into the main work directory
@@ -107,7 +110,10 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
 
   # Build the project and send output to the logfile. If anything goes wrong
   # during the build, error out.
+
+  set -o xtrace #Trace all instructions in the build for debugging
   build_project >> $LOG_FILE 2>&1 || handle_build_error
+  set +o xtrace
 
   # Before we move on to the next build, unload any modules that are project-only
   if [ -n "${PROJ_MODLIST=""}" ] && [ ! "$BUILD_OS" = "OSX" ]; then
@@ -115,6 +121,4 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
       module unload $MODULE
     done
   fi
-
-  # || raise_alert $GUARDIANS $WORK_DIR/$PROJ_NAME  #Guardians are temporarily offline
 done

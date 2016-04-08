@@ -1,24 +1,5 @@
 #!/usr/bin/env bash
 
-function message_guardians()
-{
-  ATTACHMENT="$2"
-
-  SUBJECT="Build Failure on $BUILD_HOST for project $PROJ_NAME at $(date)"
-  MESSAGE="The build for $PROJ_NAME has failed on host $BUILD_HOST."
-
-  if [ "$BUILD_OS" = "OSX" ]; then
-    echo $MESSAGE | mail -s $SUBJECT $ALERT_TO
-  else
-    echo $MESSAGE | mail -s $SUBJECT -a $ATTACHMENT $ALERT_TO
-  fi
-
-  #Hardcoded into driver, but whatever. Used to let top know if we logged
-  #this error or not.
-  echo "Logged error" >> /tmp/errlogged.txt
-}
-
-
 # Bash dynamic scoping ensures that we have all the envars that were
 # available to the build_project function. Nasty, but effective.
 function handle_build_error()
@@ -74,6 +55,10 @@ itself. The complete logs for the failed build can be accessed from any
 CVC machine by going to:
 
   $LOG_DIR/$(basename $LOG_FILE)
+
+The commands used for the build should have been traced by bash---you can find
+the literal commands (with substitution applied) in this log file prepended by
+a plus sign (+). You can grep them with `grep '^+'`.
 
 BuildBot's brain is made of bash, which is a fuzzy material that breaks a lot.
 If you feel that this message is in error, please contact BuildBot's maintainer
