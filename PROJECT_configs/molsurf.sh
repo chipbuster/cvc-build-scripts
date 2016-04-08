@@ -20,7 +20,8 @@ function build_project()
 
   #If the host config specifies these variables, QT should be appropriately set
   # shellcheck disable=SC2157
-  if [ -n "{$QMAKE_EXECUTABLE=""}" ] && [ -n "${QT_GH_FILE=""}" ]; then
+  if [ "{$QMAKE_EXECUTABLE:-undefined}" = "undefined" ] && \
+     [ "${QT_GH_FILE:-undefined}" = "undefined" ]; then
     cmake $SRC_DIR -DPRE_BUILD=OFF -DQT_QMAKE_EXECUTABLE=$QMAKE_EXECUTABLE
     cmake $SRC_DIR -DPRE_BUILD=OFF -DQT4_QGLOBAL_H_FILE=$QT_GH_FILE
   else
