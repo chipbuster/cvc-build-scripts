@@ -90,7 +90,8 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
   SRC_DIR="$WORK_DIR/$PROJ_NAME"
   LOG_FILE="$BUILD_DIR/${PROJ_NAME}.out"
 
-  svn co $SVN_URL $SRC_DIR &> /dev/null #We don't need to see the SVN co
+  #Check out the SVN repo with the cvcsvn user
+  svn co --username cvcsvn $SVN_URL $SRC_DIR &> /dev/null 
   mkdir $BUILD_DIR
   cd $BUILD_DIR
 
