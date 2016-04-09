@@ -12,7 +12,7 @@
 
 # This should be a script name in SYS_configs: if I_AM=derp, then the hostconfig
 # SYS_configs/derp.sh should exist.
-export I_AM=DEFAULT
+export I_AM=arch
 
 if [ "$I_AM" = "DEFAULT" ]; then
     echo "Please change the hostname under the variable I_AM in configs.sh"

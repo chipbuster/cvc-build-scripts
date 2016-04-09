@@ -106,14 +106,17 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
 
   # Build the project and send output to the logfile.
 
+  trap "export RETRY_BUILD=TRUE" ERR #If an error occurs, trap it and set retry
   build_project >> $LOG_FILE 2>&1
 
-  if [ "$?" -ne 0 ]; then #Builds sometimes fail for stupid reasons. Retry it
+  if [ "${RETRY_BUILD-FALSE}" = "TRUE" ]; then #Retry the build
     echo "" > $LOG_FILE  #Clean the build file
     build_info_dump
 
     #Retry the build. If it fails again, handle the error.
-    build_project >> $LOG_FILE 2>&1 || handle_build_error
+    trap handle_build_error ERR  #Trap any errors in the build command
+    build_project >> $LOG_FILE 2>&1
+    trap - ERR  #turn off the trap
 
   fi
 
