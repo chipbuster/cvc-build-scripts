@@ -70,6 +70,8 @@ ENDMAIL
 
 done
 
+else  #IF users found, email those users
+
   # If users found, email all involved users
   for USER in "${USERS[@]}"; do
   mail -s "$SUBJECT" "${USER}@ices.utexas.edu" <<ENDMAIL
