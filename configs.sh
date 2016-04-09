@@ -25,5 +25,5 @@ fi
 export BUILD_TARGETS=("molsurf" "texmol" "volrover" "f2dock")
 
 # Who should we alert when the build explodes?
-export GUARDIANS=("kcsong+crontab@utexas.edu"
+export GUARDIANS=("kcsong@utexas.edu"
                   "nathanlclement@gmail.com")

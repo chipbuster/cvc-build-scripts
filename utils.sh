@@ -42,7 +42,7 @@ function handle_build_error()
       mail -s "$SUBJECT, No culprit" "${GUARDIAN}" <<ENDMAIL
 
 CVC BuildBot has detected a broken nightly build on
-the system \"$I_AM\" for the project $PROJ_NAME.
+the system "$I_AM" for the project $PROJ_NAME.
 
 BuildBot was unable to find the culprit through the SVN logs. This suggests
 that a commit was made to a subproject that broke the build.
@@ -77,7 +77,7 @@ else  #IF users found, email those users
   mail -s "$SUBJECT" "${USER}@ices.utexas.edu" <<ENDMAIL
 
 Hello there! This is CVC BuildBot. We have detected a broken nightly build on
-the system \"$I_AM\" for the project $PROJ_NAME. Build Bot has detected that you
+the system "$I_AM" for the project $PROJ_NAME. Build Bot has detected that you
 committed to this SVN project in the last two days.
 
 Please review your recent code commits on an ICES system running $BUILD_OS.
