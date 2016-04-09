@@ -37,7 +37,7 @@ function handle_build_error()
 
 
   # If no users found, email guardians
-  if [ "${USERS[@]}" -eq 0 ]; then
+  if [ "${USERS[@]-"None"}" = "None" ]; then
     for GUARDIAN in "${GUARDIANS[@]}"; do
       mail -s "$SUBJECT" "${GUARDIAN}" <<ENDMAIL
 
