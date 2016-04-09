@@ -39,15 +39,15 @@ function handle_build_error()
   # If no users found, email guardians
   if [ "${USERS[@]-"None"}" = "None" ]; then
     for GUARDIAN in "${GUARDIANS[@]}"; do
-      mail -s "$SUBJECT" "${GUARDIAN}" <<ENDMAIL
+      mail -s "$SUBJECT, No culprit" "${GUARDIAN}" <<ENDMAIL
 
 CVC BuildBot has detected a broken nightly build on
 the system \"$I_AM\" for the project $PROJ_NAME.
 
-Build Bot was unable to find the culprit through the SVN logs. This suggests
+BuildBot was unable to find the culprit through the SVN logs. This suggests
 that a commit was made to a subproject that broke the build.
 
-The users who have committed to the CVC SVN in the last two days are:
+The users who have committed to any CVC SVN repo in the last two days are:
 
 $(svn log https://svn.ices.utexas.edu/repos/cvc/ --revision \{$DAYB4Y\}:\{$TMRRW\} --quiet \
  | grep "^r" | awk '{print $3}' | sort | uniq | tr '\n' ' ' )
@@ -61,7 +61,7 @@ $LOG_DIR/$(basename $LOG_FILE)
 
 The commands used for the build should have been traced by bash---you can find
 the literal commands (with substitution applied) in this log file prepended by
-a plus sign (+). You can grep them with `grep '^+'`.
+a plus sign (+). You can grep them with grep '^+'.
 
 BuildBot's brain is made of bash, which is a fuzzy material that breaks a lot.
 If you feel that this message is in error, please contact BuildBot's maintainer
@@ -95,7 +95,7 @@ CVC machine by going to:
 
 The commands used for the build should have been traced by bash---you can find
 the literal commands (with substitution applied) in this log file prepended by
-a plus sign (+). You can grep them with `grep '^+'`.
+a plus sign (+). You can grep them with grep '^+'.
 
 BuildBot's brain is made of bash, which is a fuzzy material that breaks a lot.
 If you feel that this message is in error, please contact BuildBot's maintainer
@@ -106,4 +106,18 @@ ENDMAIL
 done
 
 fi
+}
+
+function build_info_dump(){
+  echo "===This is $PROJ_NAME on $BUILD_HOST ($BUILD_OS)===" >> $LOG_FILE
+  echo "Build started at $(date)" >> $LOG_FILE
+  echo "Modules specified by HOST are: ${HOST_MODLIST[*]:-None}" >> $LOG_FILE
+  echo "Modules specified by PROJECT are: ${PROJ_MODLIST[*]:-None}" >> $LOG_FILE
+  echo "We are building with $NPES processors" >> $LOG_FILE
+  echo "Here is the SVN Repository info" >> $LOG_FILE
+  svn info $SRC_DIR >> $LOG_FILE
+  echo "\n\n" >> $LOG_FILE
+  echo "Here is the current environment:" >> $LOG_FILE
+  printenv >> $LOG_FILE
+  echo "===BUILD BEGINS HERE===" >> $LOG_FILE
 }

@@ -102,21 +102,23 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
   cd $BUILD_DIR
 
   # Open the logfile with info about the build
-  echo "===This is $PROJ_NAME on $BUILD_HOST ($BUILD_OS)===" >> $LOG_FILE
-  echo "Modules specified by HOST are: ${HOST_MODLIST[*]:-None}" >> $LOG_FILE
-  echo "Modules specified by PROJECT are: ${PROJ_MODLIST[*]:-None}" >> $LOG_FILE
-  echo "We are building with $NPES processors" >> $LOG_FILE
-  echo "Here is the SVN Repository info" >> $LOG_FILE
-  svn info $SRC_DIR >> $LOG_FILE
-  echo "\n\n" >> $LOG_FILE
-  echo "Here is the current environment:" >> $LOG_FILE
-  printenv >> $LOG_FILE
-  echo "===BUILD BEGINS HERE===" >> $LOG_FILE
+  build_info_dump  #Defined in utils.sh
 
-  # Build the project and send output to the logfile. If anything goes wrong
-  # during the build, error out.
+  # Build the project and send output to the logfile.
 
-  build_project >> $LOG_FILE 2>&1 || handle_build_error
+  build_project >> $LOG_FILE 2>&1
+
+  if [ "$?" -ne 0 ]; then #Builds sometimes fail for stupid reasons. Retry it
+    echo "" > $LOG_FILE  #Clean the build file
+    build_info_dump
+
+    #Retry the build. If it fails again, handle the error.
+    build_project >> $LOG_FILE 2>&1 || handle_build_error
+
+  fi
+
+  # Record the build end time
+  echo "Build ended at $(date)" >> $LOG_FILE
 
   # Before we move on to the next build, unload any modules that are project-only
   if [ -n "${PROJ_MODLIST=""}" ] && [ ! "$BUILD_OS" = "OSX" ]; then
