@@ -12,6 +12,7 @@ export MAINTAINER="ksong@ices.utexas.edu"
 
 set -o errexit #Exit on error
 set -o nounset #Exit if undef. variable is used
+set -o xtrace #Trace all instructions in the build for debugging
 
 # This is not 100% safe to get the parent dir of the script
 # but it seems to work on all ICES systems
@@ -115,9 +116,7 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
   # Build the project and send output to the logfile. If anything goes wrong
   # during the build, error out.
 
-  set -o xtrace #Trace all instructions in the build for debugging
   build_project >> $LOG_FILE 2>&1 || handle_build_error
-  set +o xtrace
 
   # Before we move on to the next build, unload any modules that are project-only
   if [ -n "${PROJ_MODLIST=""}" ] && [ ! "$BUILD_OS" = "OSX" ]; then
