@@ -8,19 +8,32 @@ export MAINTAINER="ksong@ices.utexas.edu"
 # to build the specified projects.
 
 # Note that this script will not send notifications if it fails outside of the
-# project builds, so it is best to run this from another script.
+# project builds, so it is best to run this from another script if in a noninteractive
+# environment (e.g. cron)
+
+# Source the system bashrc to get a sane environment
+# Cron will give us almost no environment to start
+if [ -f "/etc/bashrc" ]; then
+  echo "Sourcing system bashrc"
+  source "/etc/bashrc"
+fi
+if [ -f "~/.bashrc" ]; then
+  echo "Sourcing user bashrc"
+  source "~/.bashrc"
+fi
 
 set -o errexit #Exit on error
 set -o nounset #Exit if undef. variable is used
-set -o xtrace #Trace all instructions in the build for debugging
+set -o xtrace #Trace all instructions in the build
 
 # This is not 100% safe to get the parent dir of the script
-# but it seems to work on all ICES systems
+# but it seems to work on all ICES systems. The last entry in the path
+# cannot be a symlink---this is noted in the README
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $SCRIPT_DIR
 
-source configs.sh #Things to build and which host to use
-source utils.sh
+source configs.sh # Things to build and which host to use
+source utils.sh   # Build info dumps and error notification
 
 ### Set up configuration for building on this particular host
 
@@ -61,9 +74,6 @@ fi
 # variables is potentially catastrophic, but we allow errors to occur.
 set +o errexit
 
-# Will be changed in handle_build_error function if error occurs
-export BUILD_FAILED=FALSE
-
 # Loop over the build targets, building each one in turn
 for TARGET in "${BUILD_TARGETS[@]}"; do
   cd $WORK_DIR #Get back into the main work directory
@@ -97,6 +107,7 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
   LOG_FILE="$BUILD_DIR/${PROJ_NAME}.out"
 
   #Check out the SVN repo with the cvcsvn user
+  #Passwork must already be cached--contact MAINTAINER for details
   svn co --username cvcsvn $SVN_URL $SRC_DIR &> /dev/null
   mkdir $BUILD_DIR
   cd $BUILD_DIR
@@ -104,24 +115,25 @@ for TARGET in "${BUILD_TARGETS[@]}"; do
   # Open the logfile with info about the build
   build_info_dump  #Defined in utils.sh
 
-  # Build the project and send output to the logfile.
+  # Build the project and send output to the logfile. Handle errors with traps:
+  # trap once = retry, trap twice = notify users of failed build.
 
-  trap "export RETRY_BUILD=TRUE" ERR #If an error occurs, trap it and set retry
+  trap "export RETRY_BUILD=TRUE" ERR #If an error occurs, trap it and retry
   build_project >> $LOG_FILE 2>&1
 
-  if [ "${RETRY_BUILD-FALSE}" = "TRUE" ]; then #Retry the build
+  # If the build has errored once, retry the build.
+  if [ "${RETRY_BUILD-FALSE}" = "TRUE" ]; then
     echo "" > $LOG_FILE  #Clean the build file
     build_info_dump
     echo "Build restarted due to error in previous build" >> $LOG_FILE
 
-    #Retry the build. If it fails again, handle the error.
+    #Retry the build. If it fails again, notify users with handle_build_err
     trap handle_build_error ERR  #Trap any errors in the build command
     build_project >> $LOG_FILE 2>&1
-    trap - ERR  #turn off the trap
-
+    trap - ERR  #build successful---turn off the trap so we can keep going
   fi
 
-  # Record the build end time
+  # Record the build end time for timing info
   echo "Build ended at $(date)" >> $LOG_FILE
 
   # Before we move on to the next build, unload any modules that are project-only

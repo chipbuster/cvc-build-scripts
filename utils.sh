@@ -8,7 +8,8 @@ function handle_build_error()
   #this script to a machine that does not have access to /net, you will
   #need to change this function.
 
-  #Tomorrow's date and two days ago's date and today's date
+  #BSD date and GNU date do not understand each other. Get important
+  #dates now so that we don't have to deal with that in the future.
   TODAY=$(date +%Y-%m-%d)
   if [ "$(uname)" = "Darwin" ] || [ "$BUILD_OS" = "OSX" ]; then
     TMRRW=$(date -v+1d +%Y-%m-%d)
@@ -32,6 +33,7 @@ function handle_build_error()
   #Get a list of all users that have commits in the last two days
   REVNUM=$(svn info $SRC_DIR | grep -i 'Revision' | awk '{print $2}')
   SUBJECT="[CVC BB]: Failure to build ${PROJ_NAME}(r${REVNUM-SVNERR}) on $I_AM"
+  # I found this line on stackoverflow :D
   USERS=( $(svn log $SRC_DIR --revision \{$DAYB4Y\}:\{$TMRRW\} --quiet \
    | grep "^r" | awk '{print $3}' | sort | uniq | tr '\n' ' ' ) )
 
@@ -67,7 +69,6 @@ BuildBot's brain is made of bash, which is a fuzzy material that breaks a lot.
 If you feel that this message is in error, please contact BuildBot's maintainer
 at $MAINTAINER.
 ENDMAIL
-
 done
 
 else  #IF users found, email those users
@@ -110,6 +111,9 @@ done
 fi
 }
 
+
+#This function is used to dump build info before a project starts. It is a
+#good tool for making sure everything is the way we think it is.
 function build_info_dump(){
   echo "===This is $PROJ_NAME on $BUILD_HOST ($BUILD_OS)===" >> $LOG_FILE
   echo "Build started at $(date)" >> $LOG_FILE

@@ -12,10 +12,10 @@
 
 # This should be a script name in SYS_configs: if I_AM=derp, then the hostconfig
 # SYS_configs/derp.sh should exist.
-export I_AM=arch
+export I_AM=DEFAULT
 
 if [ "$I_AM" = "DEFAULT" ]; then
-    echo "Please change the hostname under the variable I_AM in configs.sh"
+	echo "Please read the documentation >:O"
     exit 10
 fi
 
@@ -24,6 +24,6 @@ fi
 # If "proj_derp" is in the array, then PROJECT_configs/proj_derp.sh should exist
 export BUILD_TARGETS=("molsurf" "texmol" "volrover" "f2dock")
 
-# Who should we alert when the build explodes?
+# Who should we alert if we can't find someone to yell at?
 export GUARDIANS=("kcsong@utexas.edu"
                   "nathanlclement@gmail.com")
