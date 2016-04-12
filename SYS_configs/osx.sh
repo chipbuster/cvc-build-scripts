@@ -20,3 +20,6 @@ export WORK_DIR=/workspace/svn_software
 
 # Make sure OS X knows where to find FORTRAN libs
 export LIBRARY_PATH=/usr/local/gfortran/lib:$LIBRARY_PATH
+
+# OS X will not give us a sane default path in cron. Set it manually
+export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
