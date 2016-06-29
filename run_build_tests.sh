@@ -3,6 +3,16 @@
 # Who to contact if you want to whine
 export MAINTAINER="ksong@ices.utexas.edu"
 
+# Source bashrc to get a sane environment
+if [ -f "/etc/bashrc" ]; then
+  echo "Sourcing system bashrc"
+  source "/etc/bashrc"
+fi
+if [ -f "~/.bashrc" ]; then
+  echo "Sourcing user bashrc"
+  source "~/.bashrc"
+fi
+
 ## This script is at the heart of the build system. It reads configuration
 # options from config.sh and sources the appropriate config scripts
 # to build the specified projects.
