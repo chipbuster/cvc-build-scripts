@@ -14,10 +14,29 @@ scripts for new projects and systems, see "Writing new configurations".
 First, edit the `configs.sh` file. Fill in the approriate hostname under
 `I_AM` (make sure the a file of the same name exists under SYS_configs), 
 place the names of the projects you want to build into the
-`BUILD_TARGETS` array, and place the email(s) of the primary point(s)-of-contact under `GUARDIANS`.
+`BUILD_TARGETS` array, and place the email(s) of the primary point(s)-of-contact
+under `GUARDIANS`.
 
 Go to the directory where the scripts were placed and run the
-`run_build_test.sh` script to test the build. Note that the final entry in the path to the scripts CANNOT be a symlink: if you have this issue, just make a directory under the symlinked directory and place the files in there.
+`run_build_test.sh` script to test the build. Note that the final entry in the
+path to the scripts CANNOT be a symlink: if you place the script at
+`/x/y/z/derp`, then strange things may happen if `derp` is a softlink.
+
+#### Project Overview
+
+The build system is driven by the `run\_build\_tests.sh` script in the
+top-level directory which takes its configs from `configs.sh`. It reads
+the `I_AM` variable and looks for that script in `SYS_configs` (e.g. if
+`I\_AM=system32`, it attempts to read `SYS\_configs/system32`). 
+
+For each project in the `BUILD\_TARGETS` array, the build system reads 
+that project's `PROJECT_configs` file, sets up an appropriate environment
+(removing old build directories, making new ones, and setting envars). It
+then runs the `build_project` function in the project config.
+
+If any of the builds fails once, it is restarted. If the build fails twice,
+it triggers error-handling functions in `utils.sh`, which currently only
+sends an email.
 
 #### Writing new configurations
 
@@ -30,7 +49,7 @@ the number of logical cores in the system. If it cannot detect this, it
 will default to 1.
 
 Also be aware that if the OS does not have a native QT install (e.g. OS
-X), you must provide `QMAKE_EXECUTABLE` and `$QT_GH_FILE`.
+X), you must provide `QMAKE_EXECUTABLE` and `$QT_GH_FILE`. 
 
 To write a new project configuration, you need to provide the components
 listed in the Project Settings section of this README. A few gotchas for
