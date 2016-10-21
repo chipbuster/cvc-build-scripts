@@ -6,15 +6,17 @@ out the code and building it on various ICES machines. These scripts are
 intended to be run from a crontab, though they can probably be manually
 triggered.
 
+If you want to create a configuration file for a new project, see `example.sh` in `PROJECT_configs`. Create a config based off of that, then send a pull request.
+
 #### Quick Start
 
 To simply test established builds, follow these instructions. To write
 scripts for new projects and systems, see "Writing new configurations".
 
 First, edit the `configs.sh` file. Fill in the approriate hostname under
-`I_AM` (make sure the a file of the same name exists under SYS_configs), 
+`I_AM` (make sure the a file of the same name exists under SYS\_configs), 
 place the names of the projects you want to build into the
-`BUILD_TARGETS` array, and place the email(s) of the primary point(s)-of-contact
+`BUILD\_TARGETS` array, and place the email(s) of the primary point(s)-of-contact
 under `GUARDIANS`.
 
 Go to the directory where the scripts were placed and run the
