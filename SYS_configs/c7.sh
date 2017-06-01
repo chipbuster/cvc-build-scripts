@@ -3,7 +3,7 @@
 ## These are the OS settings for CentOS 7
 
 echo "WARNING: You should not use these settings directly! If the build fails,
-      you will not know which host it came from! Intead, copy this to a new
+      you will not know which host it came from! Instead, copy this to a new
       config and make sure to change the BUILD_HOST to a hostname."
 
 export BUILD_OS=CentOS7
