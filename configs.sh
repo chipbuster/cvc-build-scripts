@@ -22,7 +22,7 @@ fi
 
 # Each element of this array should correspond to a script in PROJECT_configs
 # If "proj_derp" is in the array, then PROJECT_configs/proj_derp.sh should exist
-export BUILD_TARGETS=("molsurf" "texmol" "volrover" "f2dock")
+export BUILD_TARGETS=("f2dock" "fitting" "f3dock" "molsurf" "texmol" "volrover")
 
 # Who should we alert if we can't find someone to yell at?
 export GUARDIANS=("kcsong@utexas.edu"
