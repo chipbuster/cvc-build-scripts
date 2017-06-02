@@ -20,8 +20,8 @@ function handle_build_error()
   fi
 
   # If the appropriate directory does not exist, create it.
-  # Logs will be stored on neuron, labeled by date and system id (I_AM)
-  LOG_DIR="/net/thalamus/workspace/buildlogs/$TODAY/$I_AM"
+  # Logs will be stored labeled by date and system id (I_AM)
+  LOG_DIR="/net/atom/workspace/buildlogs/$TODAY/$I_AM"
 
   if [ ! -d "$LOG_DIR" ]; then
     mkdir -p "$LOG_DIR"
